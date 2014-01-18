@@ -1,17 +1,18 @@
 
 
-module.exports.contain = function(haystak, arr) {
+module.exports.contain = function(options, arr) {
 	var out = 0;
-	console.log(haystak, arr);
+	console.log(options, arr);
 	for (var i in arr) {
-		if(binarySearch(haystak, arr[i].name) == -1) {
+		if(binarySearch(options, arr[i].name) == -1) {
+			arr[i].have = false;
 			out++;
+		} else {
+			arr[i].have = true;
 		}
 	}
 	return out;
 };
-// check if this[] contains all of arr[]
-
 
 //Copyright 2009 Nicholas C. Zakas. All rights reserved.
 //MIT-Licensed, see source file

@@ -28,9 +28,13 @@ exports.think = function(req, res){
 		for (var i in matches) {
 			var drink = matches[i];
 
+			// count number of missing ingredients
 			drink.missing = util.contain(options, drink.ingredients);
-			console.log(drink);
 		}
+
+		matches.sort(function(a,b) {
+			return a.missing > b.missing;
+		})
 
 		res.send(matches);
 	});
@@ -47,24 +51,3 @@ exports.db_query = function(name) {
 		});
 	};
 }
-
-
-
-
-
-
-/* // testing stuffs //
-// db test
-exports.db = function(req, res){
-	mongo.db.collection("test", function(err, collection){
-		collection.insert({ msg: "hello world" }, function(err, docs){
-			if(err) throw err
-			res.send(docs);
-		});
-	})
-};
-
-// admin page
-exports.admin = function(req, res){
-	res.send("<h3> You are an admin! </h3>");
-};*/

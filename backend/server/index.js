@@ -9,7 +9,6 @@ var express   = require('express')
 // setup
 config(app);
 
-
 // define API routes
 app.post('/think', router.think);
 
