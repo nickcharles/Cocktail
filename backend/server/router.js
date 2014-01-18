@@ -13,12 +13,16 @@ exports.think = function(req, res){
 	
 	var drinks = mongo.db.collection("drinks");
 
-	// arr of liquor options
-	var options = req.body.sort();
+	// set of liquor options
+	var options = {};
+	for(var i in req.body) {
+		options[req.body[i]] = true;
+	}
+
 	var query = { 
 		// get all drinks which have any ingred.
 		"ingredients.name": { 
-			$in: options
+			$in: req.body
 		}
 	};
 
