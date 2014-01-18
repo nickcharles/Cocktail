@@ -4,4 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SelectionActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/IngredientsView"
+        android:layout_gravity="center"
+        tools:listitem="@android:layout/simple_list_item_multiple_choice"
+        android:clickable="true"
+        android:fadeScrollbars="true"
+        />
+
+</FrameLayout>
