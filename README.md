@@ -1,4 +1,1 @@
-CockTail
-========
-
-Drink randomizing application.
+# CockTail
