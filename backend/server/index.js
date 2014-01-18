@@ -10,10 +10,11 @@ var express   = require('express')
 config(app);
 
 // define API routes
+app.get('/think', router.think);
 app.post('/think', router.think);
 
 // simple get endpoints
-var points = ["liquor", "mixers", "drinks"];
+var points = ["liquors", "mixers", "drinks"];
 for (var i in points) {
 	app.get('/'+points[i], router.db_query(points[i]));
 }

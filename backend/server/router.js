@@ -13,16 +13,29 @@ exports.think = function(req, res){
 	
 	var drinks = mongo.db.collection("drinks");
 
+	var opts_arr = [];
+	if (req.method == "POST") {
+		opts_arr = req.body;
+	} else if (req.method == "GET") {
+		opts_arr = req.query.h;
+		console.log()
+		if (!(opts_arr instanceof Array)) {
+			opts_arr = [opts_arr]
+		}
+	} else {
+		return;
+	}
+
 	// set of liquor options
 	var options = {};
-	for(var i in req.body) {
-		options[req.body[i]] = true;
+	for(var i in opts_arr) {
+		options[opts_arr[i]] = true;
 	}
 
 	var query = { 
 		// get all drinks which have any ingred.
 		"ingredients.name": { 
-			$in: req.body
+			$in: opts_arr
 		}
 	};
 
