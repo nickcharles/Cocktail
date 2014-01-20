@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DrinkViewController : UITableViewController
+@interface DrinkViewController : UITableViewController <UIAlertViewDelegate>
 
 // set by sending VC
-@property NSMutableArray *drinks;
+@property NSMutableArray *options;
 @property NSMutableDictionary *colors;
 
 @end

@@ -198,7 +198,6 @@
 }
 */
 
-
 #pragma mark - Navigation
 
 // In a story board-based application, you will often want to do a little preparation before navigation
@@ -206,13 +205,10 @@
 {
     if ([segue.identifier isEqualToString:@"ShakeSegue"]) {
         
-        [DatabaseClient postToThink:[self.options allObjects]
-                     withCompletion:^(NSArray *arr, NSError *err) {
-                         
-                         DrinkViewController *drinkVC = [segue destinationViewController];
-                         drinkVC.drinks = [NSMutableArray arrayWithArray:arr];
-                         drinkVC.colors = self.colors;
-                     }];
+        DrinkViewController *drinkVC = [segue destinationViewController];
+        drinkVC.colors = self.colors;
+        drinkVC.options = [NSMutableArray arrayWithArray:[self.options allObjects] ];
+        
     }
 }
 

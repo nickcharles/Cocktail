@@ -7,9 +7,15 @@
 //
 
 #import "DrinkViewController.h"
+#import "DatabaseClient.h"
 
 @interface DrinkViewController ()
 
+@property NSMutableArray *drinks;
+@property NSDictionary *currentDrink;
+@property NSArray *currentIngred;
+@property NSInteger totalRatio;
+@property NSInteger drinkIndex;
 
 @end
 
@@ -20,6 +26,8 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        _totalRatio = 0;
+        _drinkIndex = 0;
     }
     return self;
 }
@@ -34,18 +42,110 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    [self getDrinkSuggestions];
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"1/10";
+    [self.navigationController.view addSubview:label];
+}
+
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    [self.tableView reloadData];
+    [self becomeFirstResponder];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self resignFirstResponder];
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    if (event.subtype == UIEventSubtypeMotionShake) {
+        [self setNextDrink];
+    }
+}
+- (IBAction)goToNextDrink:(id)sender {
+    [self setNextDrink];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)getDrinkSuggestions
+{
+    
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.center = CGPointMake(self.view.frame.size.width / 2.0, self.view.frame.size.height / 2.0 - 40);
+    [self.view addSubview: activityIndicator];
+    
+    [activityIndicator startAnimating];
+    
+    [DatabaseClient postToThink:self.options
+                 withCompletion:^(NSArray *arr, NSError *err) {
+                     
+                     [activityIndicator stopAnimating];
+                     
+                     if (arr.count != 0) {
+                         
+                         self.drinks = [NSMutableArray arrayWithArray:arr];
+                         [self setNextDrink];
+                         NSLog(@"%@", arr);
+                     } else {
+                         // Create a new alert object and set initial values.
+                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Drinks"
+                                                                         message:@"Sorry, we didn't find any drinks you can make!"
+                                                                        delegate:self
+                                                               cancelButtonTitle:@"Ahh, ok."
+                                                               otherButtonTitles:nil];
+                         // Display the alert to the user
+                         [alert show];
+                     }
+                 }];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // go back to home
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)setNextDrink
+{
+    
+    if(!self.drinks.count) {
+        NSLog(@"ERROR: No Drinks Found");
+        return;
+    }
+    
+    if (self.drinkIndex >= self.drinks.count) {
+        self.drinkIndex = 0;
+    }
+    
+    self.currentDrink = self.drinks[self.drinkIndex++];
+    self.currentIngred = self.currentDrink[@"ingredients"];
+    
+    self.totalRatio = 0;
+    for (NSDictionary *ingredient in self.currentIngred) {
+        self.totalRatio += [ingredient[@"ratio"] integerValue];
+    }
+    
+    // set title
+    UINavigationController *navCon  = (UINavigationController*) [self.navigationController.viewControllers objectAtIndex:1];
+    navCon.navigationItem.title = self.currentDrink[@"name"];
+    
+    // set which drink is being viewed
+    UIBarButtonItem *button = navCon.navigationItem.rightBarButtonItem;
+    [button setTitle:[NSString stringWithFormat:@"%ld/%ld", self.drinkIndex, self.drinks.count]];
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -59,7 +159,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [self.drinks count];
+    return [self.currentIngred count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -67,35 +167,48 @@
     static NSString *CellIdentifier = @"DrinkCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    NSDictionary *drink = self.drinks[indexPath.row];
-    [cell.textLabel setText:drink[@"name"]];
-    NSDictionary *ingredients = drink[@"ingredients"];
     
-    cell.backgroundColor = [UIColor clearColor];
-    cell.backgroundView = [[UIView alloc] init];
+    NSDictionary *ingred = self.currentIngred[indexPath.row];
+    NSString *type = ingred[@"name"];
+    NSString *name = [type capitalizedString];
     
-    NSInteger total = 0;
-    for (NSDictionary *ingredient in ingredients) {
-         total += [ingredient[@"ratio"] integerValue];
-    }
+    NSLog(@"%@", ingred);
     
+    UIFont *myFont = [ UIFont fontWithName:@"Helvetica" size:25.0 ];
+    cell.textLabel.font = myFont;
     
-    NSInteger height = cell.bounds.size.height;
-    NSInteger width = cell.bounds.size.width;
-    NSInteger index = 0;
-    NSInteger offset = 0;
-    
-    for (NSDictionary *ingredient in ingredients) {
-        NSLog(@"%@", ingredient);
-        NSInteger single = width*[ingredient[@"ratio"] integerValue]/total;
+    if ([ingred[@"have"] integerValue] != 0) {
+        [cell.textLabel setText:name];
+    } else {
+        [cell.textLabel setText:[NSString stringWithFormat:@"%@ (don't have)", name]];
+        /*NSDictionary* attributes = @{
+                                     NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]
+                                     };
         
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(offset, 0, single, height)];
-        view.backgroundColor = self.colors[ingredient[@"name"]];
-        [cell.backgroundView insertSubview:view atIndex:index++];
-        offset += single;
+        NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:@"My Text" attributes:attributes];
+        cell.textLabel.attributedText = attrText;*/
     }
+    
+    cell.backgroundColor = self.colors[type];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    /*UISwipeGestureRecognizer* gestureR;
+    gestureR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(setNextDrink)];
+    gestureR.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:gestureR];*/
     
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger height = self.view.bounds.size.height
+        - self.navigationController.navigationBar.frame.size.height
+        - [UIApplication sharedApplication].statusBarFrame.size.height + 1;
+    NSDictionary *ingred = self.currentIngred[indexPath.row];
+    NSInteger ratio = [ingred[@"ratio"] integerValue];
+    
+    return height*ratio/self.totalRatio;
 }
 
 /*

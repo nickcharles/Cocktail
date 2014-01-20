@@ -25,10 +25,9 @@
                         <sections/>
                     </tableView>
                     <navigationItem key="navigationItem" title="Cocktail" id="dkG-NN-dRD">
-                        <barButtonItem key="backBarButtonItem" title="Done" id="mYD-c2-Jzi"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="zw4-lT-Qe8">
                             <connections>
-                                <segue destination="xlo-XI-ZLr" kind="push" identifier="ShakeSegue" id="Aze-C2-Cfs"/>
+                                <segue destination="xxz-Y4-6mF" kind="push" identifier="ShakeSegue" id="hDj-fG-TVw"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -38,37 +37,43 @@
             <point key="canvasLocation" x="-134" y="-334"/>
         </scene>
         <!--Drink View Controller-->
-        <scene sceneID="nCm-2M-D04">
+        <scene sceneID="B6N-8B-TC9">
             <objects>
-                <tableViewController id="xlo-XI-ZLr" customClass="DrinkViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="239" sectionHeaderHeight="22" sectionFooterHeight="22" id="Xgg-O5-l3x">
+                <tableViewController id="xxz-Y4-6mF" customClass="DrinkViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="bYY-WM-bjj">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="DrinkCell" rowHeight="239" id="wUP-fd-oSn">
-                                <rect key="frame" x="0.0" y="86" width="320" height="239"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="DrinkCell" id="mhc-ew-pyv">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wUP-fd-oSn" id="0t4-3b-MBx">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="239"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mhc-ew-pyv" id="Vfr-7Z-yPE">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="xlo-XI-ZLr" id="aea-oV-nUr"/>
-                            <outlet property="delegate" destination="xlo-XI-ZLr" id="tuC-FT-RyL"/>
+                            <outlet property="dataSource" destination="xxz-Y4-6mF" id="cOg-Z5-h4b"/>
+                            <outlet property="delegate" destination="xxz-Y4-6mF" id="8LB-Pp-8jT"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" id="Pi6-Jg-d1p">
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="HG0-OW-1r7">
+                            <connections>
+                                <action selector="goToNextDrink:" destination="xxz-Y4-6mF" id="gaa-HQ-QGi"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mnF-cF-VMO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QA2-cD-cEb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="429" y="-334"/>
+            <point key="canvasLocation" x="422" y="-334"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zzw-Ot-gFm">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="yUT-js-Nh4" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="ziK-4E-Laf" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="sOZ-k7-7mu">
                         <autoresizingMask key="autoresizingMask"/>
@@ -77,6 +82,7 @@
                         <segue destination="tzh-wX-LW4" kind="relationship" relationship="rootViewController" id="Ywo-8s-qGZ"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yUT-js-Nh4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-668" y="-334"/>
         </scene>
